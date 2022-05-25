@@ -3,20 +3,26 @@ services:
 
   db:
     image: postgres:13.0-alpine
-    restart: always
+    restart: unless-stopped
     volumes:
       - pg_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
   web:
+    image: "foodgram:dev"
     build:
-      context: ../backend/foodgram
-      dockerfile: ../foodgram/docker/Dockerfile
-    restart: always
+      context: ../
+      dockerfile: ./backend/foodgram/docker/Dockerfile
+      args:
+        DJANGO_ENV: development
+    # restart: always
     depends_on:
       - db
     env_file:
       - ./.env
+    command: python -Wd foodgram/manage.py runserver 0.0.0.0:8000
+    volumes:
+        - django-static:/var/www/django/static
 
   frontend:
     build:
@@ -36,4 +42,5 @@ services:
 
 volumes:
   pg_data:
+  django-static:
 
