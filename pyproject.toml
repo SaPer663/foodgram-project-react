@@ -8,6 +8,7 @@ authors = ["SaPer663 <saper663ru@gmail.com>"]
 python = "^3.8"
 Django = "3.2"
 psycopg2-binary = "2.8.6"
+Pillow = "^9.1.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
