@@ -81,6 +81,8 @@ class TagsSerializer(serializers.ModelSerializer):
 
 class RecipesForReadingSerializer(serializers.ModelSerializer):
     """Сериалайзер рецепта для действий `retrieve, list`."""
+
+    author = serializers.CurrentUserDefault()
     ingredients = IngredientAmountForReadingSerializer(
         many=True,
         read_only=True,
@@ -88,14 +90,17 @@ class RecipesForReadingSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField()
     tags = TagsSerializer(many=True, read_only=True)
+    # is_favorited = serializers.SerializerMethodField()
+    # is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
         fields = (
-            'id',
+            'id', 'author',
             'tags', 'ingredients',
             'name', 'text',
-            'image', 'cooking_time'
+            'image', 'cooking_time',
+            # 'is_favorited', 'is_in_shopping_cart',
         )
 
 
@@ -110,6 +115,8 @@ class RecipesForWritingSerializer(serializers.ModelSerializer):
         queryset=Tag.objects,
     )
     image = Base64ImageField()
+    # is_favorited = serializers.SerializerMethodField()
+    # is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -117,7 +124,7 @@ class RecipesForWritingSerializer(serializers.ModelSerializer):
             'id',
             'tags', 'ingredients',
             'name', 'text',
-            'image', 'cooking_time'
+            'image', 'cooking_time',
         )
 
     def validate_ingredients(self, value):

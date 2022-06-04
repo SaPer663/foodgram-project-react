@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from api.serializers import (
@@ -24,6 +25,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
 class RecipesViewSet(ModelViewSet):
 
     queryset = Recipe.objects.all()
+    pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=user)

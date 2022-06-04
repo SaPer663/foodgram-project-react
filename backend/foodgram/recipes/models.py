@@ -54,6 +54,12 @@ class Ingredient(models.Model):
         ordering = ('name',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_following'
+            ),
+        ]
 
     def __str__(self):
         return self.name
@@ -91,6 +97,12 @@ class Recipe(models.Model):
         ordering = ('name',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('author', 'name'),
+                name='unique_author_recipe'
+            ),
+        ]
 
     def __str__(self):
         return self.name
@@ -148,3 +160,29 @@ class RecipeTags(models.Model):
 
     def __str__(self):
         return f'{self.tag.name} - {self.recipe.name}'
+
+
+class Favorites(models.Model):
+    """Избранный рецепт."""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='пользователь',
+        related_name='favorites'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name='рецепт',
+        related_name='favorites'
+    )
+
+    class Meta:
+        verbose_name = 'избранный рецепт'
+        verbose_name_plural = 'избранные рецепты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_favorites_recipe'
+            ),
+        ]
