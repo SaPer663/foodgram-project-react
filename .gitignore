@@ -118,6 +118,7 @@ static/
 # File types:
 *.sqlite3
 *.db
+*.json
 
 # Configuration file with private data:
 .env
