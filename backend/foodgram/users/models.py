@@ -1,7 +1,18 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import models
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-User = get_user_model()
+
+class User(AbstractUser):
+    """
+    Кастомная модель пользователя.
+    Изменены свойства поля `email`, т.е. добавлено значение уникальности и
+    поле обязательно для заполнения.
+    """
+    email = models.EmailField(
+        'email address',
+        unique=True
+    )
 
 
 class Follow(models.Model):
@@ -30,4 +41,4 @@ class Follow(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.author_username} - {self.user_username}'
+        return f'{self.author.username} - {self.user.username}'
