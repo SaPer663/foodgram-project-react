@@ -10,6 +10,7 @@ router = DefaultRouter()
 router.register(r'tags', views.TagsViewSet)
 router.register(r'ingredients', views.IngredientsViewSet)
 router.register(r'recipes', views.RecipesViewSet)
+router.register(r'users', views.UsersViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -34,5 +35,6 @@ urlpatterns = [
         'swagger/', schema_view.with_ui('swagger', cache_timeout=0),
         name='schema-swagger-ui'
     ),
+    path('auth/', include('djoser.urls.authtoken')),
     path('', include(router.urls)),
 ]

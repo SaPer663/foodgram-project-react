@@ -1,6 +1,5 @@
 import os
 
-from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,6 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
@@ -135,21 +136,23 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
-}
-
-# JWT
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 # DJOSER CONFIG
 DJOSER = {
 
+    'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
         'user_list': ('rest_framework.permissions.AllowAny',),
-    }
+        'user': ('djoser.permissions.CurrentUserOrAdminOrReadOnly',)
+    },
+    'SERIALIZERS': {
+        'user': 'api.user_serializers.UserSerializer',
+        'current_user': 'api.user_serializers.UserSerializer',
+        'user_create': 'api.user_serializers.CreateUserSerializer',
+        "token_create": "api.user_serializers.CreateTokenSerializer",
+    },
+    'HIDE_USERS': False,
 }

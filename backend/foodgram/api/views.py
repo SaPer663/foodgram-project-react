@@ -1,15 +1,22 @@
 from django.contrib.auth import get_user_model
-from rest_framework.pagination import LimitOffsetPagination
+from djoser.views import UserViewSet
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from api.serializers import (
+from api.recipes_serializers import (
     IngredientsSerializer, RecipesForReadingSerializer,
     RecipesForWritingSerializer, TagsSerializer,
 )
+from api.user_serializers import UserSerializer
+from core.pagination import LimitPagePagination
 from recipes.models import Ingredient, Recipe, Tag
 
 User = get_user_model()
-user = User.objects.get(username='saper663')
+
+
+class UsersViewSet(UserViewSet):
+    """Представление списка пользователей."""
+    serializer_class = UserSerializer
+    pagination_class = LimitPagePagination
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
@@ -25,10 +32,10 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
 class RecipesViewSet(ModelViewSet):
 
     queryset = Recipe.objects.all()
-    pagination_class = LimitOffsetPagination
+    pagination_class = LimitPagePagination
 
     def perform_create(self, serializer):
-        serializer.save(author=user)
+        serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
         if self.action in ('retrieve', 'list'):
