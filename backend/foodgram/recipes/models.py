@@ -57,7 +57,7 @@ class Ingredient(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('name', 'measurement_unit'),
-                name='unique_following'
+                name='unique_ingredient'
             ),
         ]
 
@@ -131,7 +131,7 @@ class IngredientAmount(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['ingredient', 'recipe'],
-                name='unique_ingredient'
+                name='unique_recipe_ingredient'
             ),
         ]
         verbose_name = 'Количество ингредиента'
@@ -186,3 +186,6 @@ class Favorites(models.Model):
                 name='unique_favorites_recipe'
             ),
         ]
+
+    def __str__(self):
+        return f'{self.recipe.name} - {self.user.username}'
