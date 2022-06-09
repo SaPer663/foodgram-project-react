@@ -48,13 +48,9 @@ WORKDIR /code
 
 COPY ./backend/foodgram/docker/entrypoint.sh /docker-entrypoint.sh
 
-RUN chmod +x '/docker-entrypoint.sh' \
-  && groupadd -r web && useradd -d /code -r -g web web \
-  && chown web:web -R /code \
-  && mkdir -p /var/www/django/static /var/www/django/media \
-  && chown web:web /var/www/django/static /var/www/django/media
-
-COPY --chown=web:web ./poetry.lock ./pyproject.toml /code/
+RUN chmod +x '/docker-entrypoint.sh'
+  
+COPY ./poetry.lock ./pyproject.toml /code/
 
 RUN echo "$DJANGO_ENV" \
   && poetry lock --no-update\
@@ -63,8 +59,6 @@ RUN echo "$DJANGO_ENV" \
     --no-interaction --no-ansi \
   && if [ "$DJANGO_ENV" = 'production' ]; then rm -rf "$POETRY_CACHE_DIR"; fi
 
-USER web
-
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
 
-COPY --chown=web:web ./backend/ /code
+COPY ./backend/ /code

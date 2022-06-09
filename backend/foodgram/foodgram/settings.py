@@ -1,6 +1,5 @@
 import os
 
-from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -10,7 +9,9 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '1234')
 
 DEBUG = os.getenv('DJANGO_DEBUG', True)
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOST', '127.0.0.1,').split(',')
+ALLOWED_HOSTS = os.getenv(
+    'DJANGO_ALLOWED_HOST', '127.0.0.1,0.0.0.0'
+).split(',')
 
 
 # Application definition
@@ -22,10 +23,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'djoser',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -40,10 +44,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': (TEMPLATES_DIR,),
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,11 +111,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+# User model
+
+AUTH_USER_MODEL = 'users.User'
 
 # Static files
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 # Media files
 
@@ -123,16 +133,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
 }
 
-# JWT
+# DJOSER CONFIG
+DJOSER = {
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
+    'LOGIN_FIELD': 'email',
+    'PERMISSIONS': {
+        'user_list': ('rest_framework.permissions.AllowAny',),
+        'user': ('djoser.permissions.CurrentUserOrAdminOrReadOnly',)
+    },
+    'SERIALIZERS': {
+        'user': 'api.user_serializers.UserSerializer',
+        'current_user': 'api.user_serializers.UserSerializer',
+        'user_create': 'api.user_serializers.CreateUserSerializer',
+        "token_create": "api.user_serializers.CreateTokenSerializer",
+    },
+    'HIDE_USERS': False,
 }

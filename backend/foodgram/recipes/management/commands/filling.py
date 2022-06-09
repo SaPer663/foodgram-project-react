@@ -24,7 +24,11 @@ def csv_parser(csv_filename):
 
 
 def insert_data(model, file):
-    file_path = os.path.join(settings.STATICFILES_DIRS[0], 'data')
+    if settings.STATICFILES_DIRS:
+        base_dir = settings.STATICFILES_DIRS[0]
+    else:
+        base_dir = settings.STATIC_ROOT
+    file_path = os.path.join(base_dir, 'data')
     is_header = True
     header = []
     model_instanse = model()
