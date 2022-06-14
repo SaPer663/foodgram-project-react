@@ -92,9 +92,13 @@ class Recipe(models.Model):
         'время приготовления',
         validators=(MinValueValidator(1),)
     )
+    pub_date = models.DateTimeField(
+        'дата публикации',
+        auto_now=True
+    )
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         constraints = [
@@ -184,6 +188,35 @@ class Favorites(models.Model):
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
                 name='unique_favorites_recipe'
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.recipe.name} - {self.user.username}'
+
+
+class Shopping_cart(models.Model):
+    """Список покупок."""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='shopping_carts',
+        verbose_name='пользователь'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='shopping_cart',
+        verbose_name='рецепт'
+    )
+
+    class Meta:
+        verbose_name = 'список покупок'
+        verbose_name_plural = 'списки покупок'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_shopping_cart_recipe'
             ),
         ]
 
