@@ -4,13 +4,13 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework.routers import DefaultRouter
 
-from api import views
+from api import recipe_views, user_views
 
 router = DefaultRouter()
-router.register(r'tags', views.TagsViewSet)
-router.register(r'ingredients', views.IngredientsViewSet)
-router.register(r'recipes', views.RecipesViewSet)
-router.register(r'users', views.UsersViewSet)
+router.register(r'tags', recipe_views.TagsViewSet)
+router.register(r'ingredients', recipe_views.IngredientsViewSet)
+router.register(r'recipes', recipe_views.RecipesViewSet)
+router.register(r'users', user_views.UsersViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
