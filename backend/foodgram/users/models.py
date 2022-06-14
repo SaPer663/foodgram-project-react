@@ -10,9 +10,14 @@ class User(AbstractUser):
     поле обязательно для заполнения.
     """
     email = models.EmailField(
-        'email address',
+        'Электронная почта',
         unique=True
     )
+
+    class Meta:
+        ordering = ('-date_joined',)
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'пользоатели'
 
 
 class Follow(models.Model):
