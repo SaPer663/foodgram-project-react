@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
-    'core.apps.CoreConfig',
     'djoser',
     'drf_yasg',
     'django_filters',
@@ -102,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -120,8 +119,6 @@ AUTH_USER_MODEL = 'users.User'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 # Media files
 

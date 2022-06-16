@@ -10,7 +10,7 @@ class User(AbstractUser):
     поле обязательно для заполнения.
     """
     email = models.EmailField(
-        'Электронная почта',
+        'электронная почта',
         unique=True
     )
 

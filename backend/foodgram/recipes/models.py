@@ -5,8 +5,7 @@ from pytils.translit import slugify
 
 User = get_user_model()
 
-TWENTY_LENGTH = 20
-ONE_HUNDRED_LENGTH = 100
+
 TWO_HUNDRED_LENGTH = 200
 
 
@@ -14,7 +13,7 @@ class Tag(models.Model):
     """Тэг рецептов."""
     name = models.CharField(
         'название',
-        max_length=ONE_HUNDRED_LENGTH,
+        max_length=TWO_HUNDRED_LENGTH,
         unique=True
     )
     color = models.CharField('Цветовой HEX-код', max_length=7)
@@ -150,11 +149,13 @@ class RecipeTags(models.Model):
     tag = models.ForeignKey(
         Tag,
         on_delete=models.CASCADE,
+        related_name='recipe_tags',
         verbose_name='тэги рецептов'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
+        related_name='recipe_tags',
         verbose_name='рецепт'
     )
 
@@ -206,7 +207,7 @@ class Shopping_cart(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='shopping_cart',
+        related_name='shopping_carts',
         verbose_name='рецепт'
     )
 

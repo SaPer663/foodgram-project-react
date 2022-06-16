@@ -1,24 +1,14 @@
 from django.contrib.auth import get_user_model
-# from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
-# from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 
-# from api.filters import AuthorAndTagFilter
-# from api.recipe_serializers import (
-#     FavoritesSerializer, IngredientsSerializer, RecipesForReadingSerializer,
-#     RecipesForWritingSerializer, TagsSerializer,
-# )
 from api.user_serializers import CustomUserSerializer, UsersFollowingSerializer
-from core.pagination import LimitPagePagination
-# from recipes.models import Recipe
+from api.utilits import LimitPagePagination
 from users.models import Follow
-
-# from users.permissions import AuthorOrReadOnly
 
 User = get_user_model()
 
@@ -34,6 +24,10 @@ class UsersViewSet(DjoserUserViewSet):
         pagination_class=LimitPagePagination
     )
     def subscriptions(self, request):
+        """
+        Возвращает пользователей, на которых подписан текущий пользователь.
+        В выдачу добавляются рецепты.
+        """
         queryset = Follow.objects.filter(user=request.user)
         pages = self.paginate_queryset(queryset)
         if pages is None:
@@ -52,6 +46,7 @@ class UsersViewSet(DjoserUserViewSet):
         permission_classes=(permissions.IsAuthenticated,),
     )
     def subscribe(self, request, id):
+        """Подписаться(отписаться) на(от) пользователя."""
         author = get_object_or_404(User, id=id)
         is_subscription = Follow.objects.filter(
             author=author,

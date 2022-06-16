@@ -20,6 +20,7 @@ class CreateTokenSerializer(TokenCreateSerializer):
 
 
 class CreateUserSerializer(UserCreateSerializer):
+    """Сериалайзер для обработки данных при создании пользователя."""
 
     class Meta:
         model = User
@@ -28,13 +29,6 @@ class CreateUserSerializer(UserCreateSerializer):
             'email', 'password',
             'first_name', 'last_name'
         )
-        extra_kwargs = {
-            'email': {'required': True},
-            'username': {'required': True},
-            'password': {'required': True},
-            'first_name': {'required': True},
-            'last_name': {'required': True},
-        }
 
 
 class CustomUserSerializer(DjoserUserSerializer):
