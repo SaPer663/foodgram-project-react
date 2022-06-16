@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from recipes.models import (
-    Favorites, Ingredient, IngredientAmount, Recipe, RecipeTags, Shopping_cart,
+    Favorites, Ingredient, IngredientAmount, Recipe, RecipeTags, ShoppingCart,
     Tag,
 )
 
@@ -56,7 +56,7 @@ class FavoritesAdmin(admin.ModelAdmin):
     list_filter = ('recipe', 'user',)
 
 
-@admin.register(Shopping_cart)
+@admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     """Список покупок."""
     list_display = ('recipe', 'user')

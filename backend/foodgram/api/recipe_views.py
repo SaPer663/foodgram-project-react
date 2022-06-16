@@ -17,7 +17,7 @@ from api.recipe_serializers import (
 )
 from api.user_serializers import RecipeMinified
 from api.utilits import LimitPagePagination, get_shopping_cart_pdf
-from recipes.models import Favorites, Ingredient, Recipe, Shopping_cart, Tag
+from recipes.models import Favorites, Ingredient, Recipe, ShoppingCart, Tag
 from users.permissions import AuthorOrReadOnly
 
 User = get_user_model()
@@ -96,7 +96,7 @@ class RecipesViewSet(ModelViewSet):
         Добавление(удаление) ингредиентов рецепта в(из) список(ка) покупок
         """
         recipe = get_object_or_404(Recipe, pk=pk)
-        in_shopping_cart = Shopping_cart.objects.filter(
+        in_shopping_cart = ShoppingCart.objects.filter(
             recipe=recipe, user=request.user
         ).exists()
         if request.method == 'DELETE':
@@ -104,7 +104,7 @@ class RecipesViewSet(ModelViewSet):
                 raise ValidationError(
                     {'recipe': 'Рецепта нет в списке покупок.'}
                 )
-            Shopping_cart.objects.get(
+            ShoppingCart.objects.get(
                 recipe=recipe, user=request.user
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -112,7 +112,7 @@ class RecipesViewSet(ModelViewSet):
             raise ValidationError(
                 {'recipe': 'Рецепт уже в списке покупок.'}
             )
-        Shopping_cart.objects.create(
+        ShoppingCart.objects.create(
             recipe=recipe, user=request.user
         )
         return Response(

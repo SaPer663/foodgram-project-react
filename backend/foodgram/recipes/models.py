@@ -196,7 +196,7 @@ class Favorites(models.Model):
         return f'{self.recipe.name} - {self.user.username}'
 
 
-class Shopping_cart(models.Model):
+class ShoppingCart(models.Model):
     """Список покупок."""
     user = models.ForeignKey(
         User,
