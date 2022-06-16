@@ -27,9 +27,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
-    'core.apps.CoreConfig',
     'djoser',
     'drf_yasg',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -101,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -120,8 +120,6 @@ AUTH_USER_MODEL = 'users.User'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
-
 # Media files
 
 MEDIA_URL = '/media/'
@@ -133,7 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -149,8 +147,8 @@ DJOSER = {
         'user': ('djoser.permissions.CurrentUserOrAdminOrReadOnly',)
     },
     'SERIALIZERS': {
-        'user': 'api.user_serializers.UserSerializer',
-        'current_user': 'api.user_serializers.UserSerializer',
+        'user': 'api.user_serializers.CustomUserSerializer',
+        'current_user': 'api.user_serializers.CustomUserSerializer',
         'user_create': 'api.user_serializers.CreateUserSerializer',
         "token_create": "api.user_serializers.CreateTokenSerializer",
     },

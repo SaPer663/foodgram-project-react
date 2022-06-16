@@ -5,8 +5,7 @@ from pytils.translit import slugify
 
 User = get_user_model()
 
-TWENTY_LENGTH = 20
-ONE_HUNDRED_LENGTH = 100
+
 TWO_HUNDRED_LENGTH = 200
 
 
@@ -14,7 +13,7 @@ class Tag(models.Model):
     """Тэг рецептов."""
     name = models.CharField(
         'название',
-        max_length=ONE_HUNDRED_LENGTH,
+        max_length=TWO_HUNDRED_LENGTH,
         unique=True
     )
     color = models.CharField('Цветовой HEX-код', max_length=7)
@@ -92,9 +91,13 @@ class Recipe(models.Model):
         'время приготовления',
         validators=(MinValueValidator(1),)
     )
+    pub_date = models.DateTimeField(
+        'дата публикации',
+        auto_now=True
+    )
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         constraints = [
@@ -146,11 +149,13 @@ class RecipeTags(models.Model):
     tag = models.ForeignKey(
         Tag,
         on_delete=models.CASCADE,
+        related_name='recipe_tags',
         verbose_name='тэги рецептов'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
+        related_name='recipe_tags',
         verbose_name='рецепт'
     )
 
@@ -184,6 +189,35 @@ class Favorites(models.Model):
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
                 name='unique_favorites_recipe'
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.recipe.name} - {self.user.username}'
+
+
+class ShoppingCart(models.Model):
+    """Список покупок."""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='shopping_carts',
+        verbose_name='пользователь'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='shopping_carts',
+        verbose_name='рецепт'
+    )
+
+    class Meta:
+        verbose_name = 'список покупок'
+        verbose_name_plural = 'списки покупок'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_shopping_cart_recipe'
             ),
         ]
 
