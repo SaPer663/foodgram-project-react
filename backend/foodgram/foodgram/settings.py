@@ -2,15 +2,14 @@ import os
 
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '1234')
 
-DEBUG = os.getenv('DJANGO_DEBUG', True)
+DEBUG = os.getenv('DJANGO_DEBUG', False)
 
 ALLOWED_HOSTS = os.getenv(
-    'DJANGO_ALLOWED_HOST', '127.0.0.1,0.0.0.0'
+    'DJANGO_ALLOWED_HOST', '127.0.0.1,'
 ).split(',')
 
 
@@ -65,7 +64,6 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -80,7 +78,7 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -99,7 +97,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'ru-ru'
 
@@ -117,7 +114,7 @@ AUTH_USER_MODEL = 'users.User'
 
 # Static files
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static_backend/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Media files
