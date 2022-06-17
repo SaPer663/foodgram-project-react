@@ -61,6 +61,6 @@ RUN echo "$DJANGO_ENV" \
 
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
 
-COPY ./backend/foodgram /code
+COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram.foodgram.wsgi"]
