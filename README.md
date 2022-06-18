@@ -13,7 +13,7 @@
 [![Yandex.Cloud](https://img.shields.io/badge/-Yandex.Cloud-464646?style=flat-square&logo=Yandex.Cloud)](https://cloud.yandex.ru/)
 
 
-Foodgram(«Продуктовый помощник») это онлайн-сервис и API для него. На этом
+Foodgram(«Продуктовый помощник») - это онлайн-сервис и API для него. На этом
 сервисе пользователи смогут публиковать рецепты, подписываться на публикации
 других пользователей, добавлять понравившиеся рецепты в список «Избранное»,
 а перед походом в магазин скачивать сводный список продуктов, необходимых для
@@ -45,24 +45,24 @@ DJANGO_DEBUG - режим работы сервера
 - для развёртывания с `github action` добавьте в Secrets GitHub переменные
 окружения:
 
-    ```
-    DB_ENGINE=<django.db.backends.postgresql>
-    DB_NAME=<имя базы данных postgres>
-    DB_USER=<пользователь бд>
-    DB_PASSWORD=<пароль>
-    DB_HOST=<db>
-    DB_PORT=<5432>
-    
-    DOCKER_PASSWORD=<пароль от DockerHub>
-    DOCKER_USERNAME=<имя пользователя>
-    
-    SECRET_KEY=<секретный ключ проекта django>
-    USER=<username для подключения к серверу>
-    HOST=<IP сервера>
-    SSH_KEY=< SSH ключ
-    TELEGRAM_TO=<ID чата, в который придет сообщение>
-    TELEGRAM_TOKEN=<токен вашего бота>
-    ``` 
+```
+DB_ENGINE=<django.db.backends.postgresql>
+DB_NAME=<имя базы данных postgres>
+DB_USER=<пользователь бд>
+DB_PASSWORD=<пароль>
+DB_HOST=<db>
+DB_PORT=<5432>
+
+DOCKER_PASSWORD=<пароль от DockerHub>
+DOCKER_USERNAME=<имя пользователя>
+
+SECRET_KEY=<секретный ключ проекта django>
+USER=<username для подключения к серверу>
+HOST=<IP сервера>
+SSH_KEY=< SSH ключ
+TELEGRAM_TO=<ID чата, в который придет сообщение>
+TELEGRAM_TOKEN=<токен вашего бота>
+``` 
   
 - на сервере запустите контейнеры через docker-compose:
 ```
