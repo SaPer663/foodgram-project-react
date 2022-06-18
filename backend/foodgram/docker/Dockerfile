@@ -3,10 +3,8 @@ FROM python:3.8-slim
 LABEL maintainer="saper663ru@gmail.com"
 LABEL author="saper663"
 
-
-ENV DJANGO_ENV=${DJANGO_ENV} \
-  # build:
-  BUILD_ONLY_PACKAGES='wget' \
+ARG DJANGO_ENV
+ENV BUILD_ONLY_PACKAGES='wget' \
   # python:
   PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
@@ -46,7 +44,7 @@ RUN apt-get update && apt-get upgrade -y \
 
 WORKDIR /code
 
-COPY ./docker/entrypoint.sh /docker-entrypoint.sh
+COPY ./backend/foodgram/docker/entrypoint.sh /docker-entrypoint.sh
 
 RUN chmod +x '/docker-entrypoint.sh'
   
@@ -61,6 +59,6 @@ RUN echo "$DJANGO_ENV" \
 
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
 
-COPY . .
+COPY ./backend/foodgram/ .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram.foodgram.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram.wsgi"]

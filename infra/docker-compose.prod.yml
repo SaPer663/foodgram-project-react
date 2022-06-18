@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+
+  web:
+    image: saper663/foodgram:latest
+    build:
+      args:
+        DJANGO_ENV: production
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+    volumes:
+        - django-static:/code/foodgram/static
+        - django-media:/code/foodgram/media
+
+  frontend:
+    image: saper663/foodgram_frontend:latest
+    
+  
+  nginx:
+    ports:
+      - "8080:80"
+    
+
+volumes:
+  pg_data:
+  django-static:
+  django-media:
+
