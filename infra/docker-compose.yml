@@ -25,9 +25,6 @@ services:
         - django-media:/code/foodgram/media
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
   

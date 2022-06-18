@@ -17,6 +17,9 @@ services:
 
   frontend:
     image: saper663/foodgram_frontend:latest
+    volumes:
+      - ./frontend/:/app/result_build/
+
     
   
   nginx:

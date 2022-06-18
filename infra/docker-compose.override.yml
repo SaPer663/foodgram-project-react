@@ -16,3 +16,8 @@ services:
     volumes:
       # We only mount source code in development:
       - ../backend:/code
+  
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
