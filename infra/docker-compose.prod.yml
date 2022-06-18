@@ -3,9 +3,7 @@ services:
 
   web:
     image: saper663/foodgram:latest
-    build:
-      args:
-        DJANGO_ENV: production
+    
     restart: always
     depends_on:
       - db
@@ -16,7 +14,6 @@ services:
         - django-media:/code/foodgram/media
 
   frontend:
-    image: saper663/foodgram_frontend:latest
     volumes:
       - ./frontend/:/app/result_build/
 
@@ -24,7 +21,9 @@ services:
   
   nginx:
     ports:
-      - "8080:80"
+      - "80:80"
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html/
     
 
 volumes:

@@ -12,6 +12,11 @@
 version: "3.8"
 services:
   web:
+    build:
+      context: ../
+      dockerfile: ./backend/foodgram/docker/Dockerfile
+      args:
+        DJANGO_ENV: development
     command: python -Wd foodgram/manage.py runserver 0.0.0.0:8000
     volumes:
       # We only mount source code in development:
@@ -21,3 +26,5 @@ services:
     build:
       context: ../frontend
       dockerfile: Dockerfile
+    volumes:
+      - ../frontend/:/app/result_build/
