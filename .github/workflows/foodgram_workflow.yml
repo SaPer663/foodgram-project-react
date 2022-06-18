@@ -61,7 +61,6 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
-        command_timeout: 40m
   
         script: |
             cd ~/foodgram
@@ -77,7 +76,7 @@ jobs:
             echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
             echo DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }} >> .env
             echo DOMAIN_NAME=${{ secrets.DOMAIN_NAME }} >> .env
-            sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+            sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
             sudo docker-compose exec -T web python manage.py makemigrations
             sudo docker-compose exec -T web python manage.py migrate --noinput
             sudo docker-compose exec -T web python manage.py collectstatic --no-input
