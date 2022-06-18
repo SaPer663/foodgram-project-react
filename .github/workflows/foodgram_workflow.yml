@@ -28,62 +28,66 @@ jobs:
         python -m flake8
         # python -m pytest
 
-  # build_and_push_to_docker_hub:
-  #   if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-  #   name: Push Docker image to Docker Hub
-  #   runs-on: ubuntu-latest
-  #   needs: tests
-  #   steps:
-  #     - name: Check out the repo
-  #       uses: actions/checkout@v2 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v1 
-  #     - name: Login to Docker Hub
-  #       uses: docker/login-action@v1 
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
-  #     - name: Push to Docker Hub
-  #       uses: docker/build-push-action@v2 
-  #       with:
-  #         context: ./api_yamdb
-  #         push: true
-  #         tags: saper663/api_yamdb:latest
+  build_and_push_to_docker_hub:
+    # if: github.ref == 'refs/heads/master' 
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2 
+        with:
+          file: ./backend/foodgram/docker/Dockerfile
+          push: true
+          tags: saper663/foodgram:latest
   
-  # deploy:
-  #   if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   needs: build_and_push_to_docker_hub
-  #   steps:
-  #   - name: executing remote ssh commands to deploy
-  #     uses: appleboy/ssh-action@master
-  #     with:
-  #       host: ${{ secrets.HOST }}
-  #       username: ${{ secrets.USER }}
-  #       key: ${{ secrets.SSH_KEY }}
+  deploy:
+    # if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build_and_push_to_docker_hub
+    steps:
+    - name: executing remote ssh commands to deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_KEY }}
   
-  #       script: |
-  #           sudo docker compose stop
-  #           sudo docker compose rm -f web
-  #           touch .env
-  #           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
-  #           echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-  #           echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-  #           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-  #           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-  #           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-  #           echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
-  #           echo DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }} >> .env
-  #           echo DOMAIN_NAME=${{ secrets.DOMAIN_NAME }} >> .env
-  #           sudo docker compose up -d
+        script: |
+            cd ~/foodgram
+            sudo docker-compose stop
+            sudo docker-compose rm -f web
+            touch .env
+            echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
+            echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+            echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
+            echo DOMAIN_NAME=${{ secrets.DOMAIN_NAME }} >> .env
+            echo DOMAIN_NAME=${{ secrets.DJANGO_ALLOWED_HOST }} >> .env
+            sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+            sudo docker-compose exec -T web python manage.py makemigrations
+            sudo docker-compose exec -T web python manage.py migrate --noinput
+            sudo docker-compose exec -T web python manage.py collectstatic --no-input
 
-  # send_message:
-  #   runs-on: ubuntu-latest
-  #   needs: deploy
-  #   steps:
-  #   - name: send message
-  #     uses: appleboy/telegram-action@master
-  #     with:
-  #       to: ${{ secrets.TELEGRAM_TO }}
-  #       token: ${{ secrets.TELEGRAM_TOKEN }}
-  #       message: ${{ github.workflow }} успешно выполнен!
+  send_message:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+    - name: send message
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: ${{ github.workflow }} успешно выполнен!

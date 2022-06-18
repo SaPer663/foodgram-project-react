@@ -10,27 +10,18 @@ services:
       - ./.env
   web:
     image: "foodgram:dev"
-    build:
-      context: ../
-      dockerfile: ./backend/foodgram/docker/Dockerfile
-      args:
-        DJANGO_ENV: development
     restart: always
     depends_on:
       - db
     env_file:
       - ./.env
-    command: python -Wd foodgram/manage.py runserver 0.0.0.0:8000
     volumes:
         - django-static:/code/foodgram/static
         - django-media:/code/foodgram/media
-
+  
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ../frontend/:/app/result_build/
+    image: saper663/foodgram_frontend:latest
+
   
   nginx:
     image: nginx:1.21.3-alpine
