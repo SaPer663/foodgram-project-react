@@ -25,7 +25,7 @@ Foodgram(«Продуктовый помощник») - это онлайн-се
 ```
 git clone https://github.com/SaPer663/foodgram-project-react.git
 ```
-## На удаленном сервере:
+### На удаленном сервере:
 
 - скопируйте файлы docker-compose.yml, docker-compose.prod.yml и nginx.conf
 из директории infra на сервер;
