@@ -10,8 +10,8 @@ services:
     env_file:
       - ./.env
     volumes:
-        - django-static:/code/foodgram/static
-        - django-media:/code/foodgram/media
+        - django-static:/code/static
+        - django-media:/code/media
 
   frontend:
     volumes:
