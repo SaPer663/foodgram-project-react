@@ -75,7 +75,7 @@ jobs:
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
             echo DOMAIN_NAME=${{ secrets.DOMAIN_NAME }} >> .env
-            echo DOMAIN_NAME=${{ secrets.DJANGO_ALLOWED_HOST }} >> .env
+            echo DJANGO_ALLOWED_HOST=${{ secrets.DJANGO_ALLOWED_HOST }} >> .env
             sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
             sudo docker-compose exec -T web python manage.py makemigrations
             sudo docker-compose exec -T web python manage.py migrate --noinput
