@@ -142,7 +142,7 @@ class RecipesForWritingSerializer(serializers.ModelSerializer):
             )
         ingredient_set = set()
         for ingredient in value:
-            ingredient_id = ingredient.get('ingredient').get('id')
+            ingredient_id = ingredient['ingredient']['id']
             if ingredient_id in ingredient_set:
                 raise serializers.ValidationError(
                     'Проверьте, что ингредиенты не повторяются'
