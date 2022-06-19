@@ -134,4 +134,4 @@ class RecipesViewSet(ModelViewSet):
         response['Content-Disposition'] = (
             'attachment; ' 'filename="shopping_cart.pdf"'
         )
-        return get_shopping_cart_pdf(request, shopping_cart_queryset, response)
+        return get_shopping_cart_pdf(shopping_cart_queryset, response)
