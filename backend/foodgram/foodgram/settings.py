@@ -9,7 +9,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '1234')
 DEBUG = os.getenv('DJANGO_DEBUG', False)
 
 ALLOWED_HOSTS = os.getenv(
-    'DJANGO_ALLOWED_HOST', '127.0.0.1,'
+    'DJANGO_ALLOWED_HOST', '127.0.0.1,0.0.0.0'
 ).split(',')
 
 

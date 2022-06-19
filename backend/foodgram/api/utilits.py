@@ -21,7 +21,7 @@ class LimitPagePagination(PageNumberPagination):
     page_size_query_param = 'limit'
 
 
-def get_shopping_cart_pdf(request, shopping_cart_queryset, response):
+def get_shopping_cart_pdf(shopping_cart_queryset, writable_object):
     """
     Создаёт PDF файл с данными перданного queryset.
     Каждый объект queryset имеет ключи: `name`, `amount`, `unit`.
@@ -29,7 +29,7 @@ def get_shopping_cart_pdf(request, shopping_cart_queryset, response):
     pdfmetrics.registerFont(
         TTFont('Arial', 'arial.ttf', 'UTF-8')
     )
-    page = canvas.Canvas(response)
+    page = canvas.Canvas(writable_object)
     page.setFont('Arial', size=24)
     page.drawString(200, 800, 'Список ингредиентов')
     page.setFont('Arial', size=16)
@@ -45,4 +45,4 @@ def get_shopping_cart_pdf(request, shopping_cart_queryset, response):
         height -= 25
     page.showPage()
     page.save()
-    return response
+    return writable_object
