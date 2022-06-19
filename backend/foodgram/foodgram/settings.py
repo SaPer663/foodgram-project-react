@@ -115,6 +115,9 @@ AUTH_USER_MODEL = 'users.User'
 # Static files
 
 STATIC_URL = '/static_backend/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Media files
