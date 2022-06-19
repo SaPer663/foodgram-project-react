@@ -9,7 +9,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '1234')
 DEBUG = os.getenv('DJANGO_DEBUG', False)
 
 ALLOWED_HOSTS = os.getenv(
-    'DJANGO_ALLOWED_HOST', '127.0.0.1,0.0.0.0'
+    'DJANGO_ALLOWED_HOST', '127.0.0.1,'
 ).split(',')
 
 
@@ -115,9 +115,7 @@ AUTH_USER_MODEL = 'users.User'
 # Static files
 
 STATIC_URL = '/static_backend/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Media files
