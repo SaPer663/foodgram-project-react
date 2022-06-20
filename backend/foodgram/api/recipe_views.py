@@ -34,7 +34,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     serializer_class = IngredientsSerializer
     queryset = Ingredient.objects.all()
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('^name',)
+    search_fields = ('name',)
 
 
 class RecipesViewSet(ModelViewSet):
