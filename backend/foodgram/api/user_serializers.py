@@ -100,12 +100,12 @@ class FollowSerializer(serializers.ModelSerializer):
             'recipes_limit'
         )
         if recipes_limit:
-            return RecipeMinified(
+            return RecipeMinifiedSerializer(
                 instance=obj.author.recipes.all()[:int(recipes_limit)],
                 many=True
             ).data
         instance = obj.author.recipes.all()
-        return RecipeMinified(
+        return RecipeMinifiedSerializer(
             instance=instance,
             many=True
         ).data
@@ -142,7 +142,7 @@ class UnfollowSerializer(serializers.ModelSerializer):
         return data
 
 
-class RecipeMinified(serializers.ModelSerializer):
+class RecipeMinifiedSerializer(serializers.ModelSerializer):
     """Уменьшенный сериализатор рецептов."""
 
     class Meta:

@@ -5,9 +5,10 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 
-from api.user_serializers import CustomUserSerializer
+from api.user_serializers import CustomUserSerializer, RecipeMinifiedSerializer
 from recipes.models import (
-    Favorites, Ingredient, IngredientAmount, Recipe, RecipeTags, Tag,
+    Favorites, Ingredient, IngredientAmount, Recipe, RecipeTags, ShoppingCart,
+    Tag,
 )
 
 User = get_user_model()
@@ -210,14 +211,14 @@ class RecipesForWritingSerializer(serializers.ModelSerializer):
 
 class FavoritesSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления рецепта в список избранных рецептов."""
-    id = serializers.ReadOnlyField(source='recipe.id')
-    name = serializers.ReadOnlyField(source='recipe.name')
-    image = serializers.ImageField(source='recipe.image', read_only=True)
-    cooking_time = serializers.ReadOnlyField(source='recipe.cooking_time')
 
     class Meta:
         model = Favorites
-        fields = ('id', 'name', 'image', 'cooking_time', 'recipe', 'user')
+        fields = ('recipe', 'user')
+        extra_kwargs = {
+            'user': {'write_only': True},
+            'recipe': {'write_only': True}
+        }
         validators = (
             UniqueTogetherValidator(
                 queryset=Favorites.objects.all(),
@@ -227,6 +228,32 @@ class FavoritesSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
-        ret.pop('user')
-        ret.pop('recipe')
+        ret.update(RecipeMinifiedSerializer(
+            instance=self.validated_data.get('recipe')
+        ).data)
+        return ret
+
+
+class ShoppingCartSerializer(serializers.ModelSerializer):
+    """Сериализатор для добавления ингредиентов рецепта в список покупок."""
+
+    class Meta:
+        model = ShoppingCart
+        fields = ('recipe', 'user')
+        extra_kwargs = {
+            'user': {'write_only': True},
+            'recipe': {'write_only': True}
+        }
+        validators = (
+            UniqueTogetherValidator(
+                queryset=ShoppingCart.objects.all(),
+                fields=('user', 'recipe'),
+            ),
+        )
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret.update(RecipeMinifiedSerializer(
+            instance=self.validated_data.get('recipe')
+        ).data)
         return ret
