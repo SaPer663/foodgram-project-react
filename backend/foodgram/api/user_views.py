@@ -4,9 +4,10 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
 
-from api.user_serializers import CustomUserSerializer, UsersFollowingSerializer
+from api.user_serializers import (
+    CustomUserSerializer, FollowSerializer, UnfollowSerializer,
+)
 from api.utilits import LimitPagePagination
 from users.models import Follow
 
@@ -31,41 +32,40 @@ class UsersViewSet(DjoserUserViewSet):
         queryset = Follow.objects.filter(user=request.user)
         pages = self.paginate_queryset(queryset)
         if pages is None:
-            serializer = UsersFollowingSerializer(
+            serializer = FollowSerializer(
                 instance=queryset, many=True, context={'request': request}
             )
             return Response(serializer.data)
-        serializer = UsersFollowingSerializer(
+        serializer = FollowSerializer(
             instance=pages, many=True, context={'request': request}
         )
         return self.get_paginated_response(serializer.data)
 
     @action(
-        methods=['post', 'delete'],
+        methods=('post',),
         detail=True,
         permission_classes=(permissions.IsAuthenticated,),
     )
     def subscribe(self, request, id):
-        """Подписаться(отписаться) на(от) пользователя."""
+        """Подписаться на пользователя."""
         author = get_object_or_404(User, id=id)
-        is_subscription = Follow.objects.filter(
-            author=author,
-            user=request.user
-        ).exists()
-        if request.method == 'DELETE':
-            if not is_subscription:
-                raise ValidationError({'author': 'Автор не в подписках.'})
-            Follow.objects.get(author=author, user=request.user).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        if is_subscription:
-            raise ValidationError(
-                {'author': 'Автор уже есть в ваших подписках.'}
-            )
-        if author == request.user:
-            raise ValidationError({'author': 'Нельзя подписаться на себя.'})
-        instance = Follow.objects.create(author=author, user=request.user)
-        serializer = UsersFollowingSerializer(
-            instance=instance,
-            context={'request': request}
+        serializer = FollowSerializer(
+            data={'author': author.id, 'user': request.user.id},
+            context={
+                'request': request,
+            }
         )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @subscribe.mapping.delete
+    def unsubscribe(self, request, id):
+        """Отписаться от пользователя."""
+        author = get_object_or_404(User, id=id)
+        serializer = UnfollowSerializer(
+            data={'author': author.id, 'user': request.user.id}
+        )
+        serializer.is_valid(raise_exception=True)
+        Follow.objects.get(author=author, user=request.user).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

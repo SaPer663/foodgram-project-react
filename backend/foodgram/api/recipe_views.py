@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, Sum
@@ -20,6 +21,7 @@ from api.utilits import LimitPagePagination, get_shopping_cart_pdf
 from recipes.models import Favorites, Ingredient, Recipe, ShoppingCart, Tag
 from users.permissions import AuthorOrReadOnly
 
+CONTENT_TYPE = 'application/pdf'
 User = get_user_model()
 
 
@@ -73,18 +75,20 @@ class RecipesViewSet(ModelViewSet):
                 instance.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             except ObjectDoesNotExist:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = FavoritesSerializer(data={
-            'recipe': pk,
-            'user': request.user.id
-        })
-        serializer.is_valid(raise_exception=True)
-        Favorites.objects.create(recipe=recipe, user=request.user)
-        data = serializer.data.copy()
-        data.pop('recipe')
-        data.pop('user')
-        return Response(data=data, status=status.HTTP_201_CREATED)
+                return Response(
+                    data={'errors': 'Рецепта нет в избранных'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        if request.method == 'POST':
+            serializer = FavoritesSerializer(data={
+                'recipe': pk,
+                'user': request.user.id
+            })
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(
+                data=serializer.data, status=status.HTTP_201_CREATED
+            )
 
     @action(
         methods=['post', 'delete'],
@@ -108,17 +112,14 @@ class RecipesViewSet(ModelViewSet):
                 recipe=recipe, user=request.user
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        if in_shopping_cart:
-            raise ValidationError(
-                {'recipe': 'Рецепт уже в списке покупок.'}
+        if request.method == 'POST':
+            ShoppingCart.objects.get_or_create(
+                recipe=recipe, user=request.user
             )
-        ShoppingCart.objects.create(
-            recipe=recipe, user=request.user
-        )
-        return Response(
-            RecipeMinified(instance=recipe).data,
-            status=status.HTTP_201_CREATED
-        )
+            return Response(
+                RecipeMinified(instance=recipe).data,
+                status=status.HTTP_201_CREATED
+            )
 
     @action(
         detail=False,
@@ -130,8 +131,8 @@ class RecipesViewSet(ModelViewSet):
             name=F('recipe__ingredient_amounts__ingredient__name'),
             unit=F('recipe__ingredient_amounts__ingredient__measurement_unit')
         ).annotate(amount=Sum('recipe__ingredient_amounts__amount'))
-        response = HttpResponse(content_type='application/pdf')
+        response = HttpResponse(content_type=CONTENT_TYPE)
         response['Content-Disposition'] = (
-            'attachment; ' 'filename="shopping_cart.pdf"'
+            f'attachment; filename={settings.UPLOAD_FILE_NAME}'
         )
         return get_shopping_cart_pdf(shopping_cart_queryset, response)

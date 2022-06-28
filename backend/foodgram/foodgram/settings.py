@@ -122,6 +122,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+UPLOAD_FILE_NAME = 'shopping_cart.pdf'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -153,3 +154,6 @@ DJOSER = {
     },
     'HIDE_USERS': False,
 }
+
+MINIMUM_COOKING_TIME = 1
+LEAST_AMOUNT_OF_INGREDIENT = 1
