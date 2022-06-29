@@ -37,29 +37,30 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
 
 
 class TagsSerializer(serializers.ModelSerializer):
-    """Сериалайзер тэга."""
+    """Сериалайзер тега."""
+
+    name = serializers.CharField(
+        max_length=200,
+        validators=(
+            UniqueValidator(
+                queryset=Tag.objects.all(),
+                message='Тег с таким именем уже есть'
+            ),
+        )
+    )
+    slug = serializers.SlugField(
+        max_length=200,
+        validators=(
+            UniqueValidator(
+                queryset=Tag.objects.all(),
+                message='Тег с таким слагом уже есть'
+            ),
+        )
+    )
 
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug', )
-        extra_kwargs = {
-            'name': {
-                'validators': (
-                    UniqueValidator(
-                        queryset=Tag.objects.all(),
-                        message='Тег с таким именем уже есть'
-                    ),
-                )
-            },
-            'slug': {
-                'validators': (
-                    UniqueValidator(
-                        queryset=Tag.objects.all(),
-                        message='Тег с таким слагом уже есть'
-                    ),
-                )
-            }
-        }
 
 
 class RecipesForReadingSerializer(serializers.ModelSerializer):

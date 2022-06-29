@@ -35,16 +35,16 @@ class Follow(models.Model):
         ordering = ('-id',)
         verbose_name = 'подписка'
         verbose_name_plural = 'подписки'
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
-                fields=['user', 'author'],
+                fields=('user', 'author'),
                 name='unique_following'
             ),
             models.CheckConstraint(
                 name='prevent_self_follow',
                 check=~models.Q(user=models.F('author')),
             ),
-        ]
+        )
 
     def __str__(self):
         return f'{self.author.username} - {self.user.username}'
