@@ -29,6 +29,10 @@ class CreateUserSerializer(UserCreateSerializer):
             'email', 'password',
             'first_name', 'last_name'
         )
+        extra_kwargs = {
+            'first_name': {'required': True},
+            'last_name': {'required': True},
+        }
 
 
 class CustomUserSerializer(DjoserUserSerializer):

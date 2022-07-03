@@ -32,7 +32,7 @@ class IngredientsAdmin(admin.ModelAdmin):
     """Ингредиенты."""
     list_display = ('name', 'measurement_unit',)
     list_filter = ('name', 'measurement_unit',)
-    search_fields = ('name',)
+    search_fields = ('measurement_unit',)
 
 
 @admin.register(Recipe)
@@ -40,7 +40,9 @@ class RecipesAdmin(admin.ModelAdmin):
     """Рецепты."""
     list_display = ('name', 'author', 'favorite_count')
     list_filter = ('name', 'author', 'tags')
-    search_fields = ('name',)
+    search_fields = (
+        'name', 'author__username', 'author__email',
+    )
     filter_horizontal = ('ingredients',)
     inlines = (RecipeTagsInline, IngredientAmountInline)
 
@@ -53,11 +55,16 @@ class RecipesAdmin(admin.ModelAdmin):
 class FavoritesAdmin(admin.ModelAdmin):
     """Избранные рецепты."""
     list_display = ('recipe', 'user')
-    list_filter = ('recipe', 'user',)
+    search_fields = (
+        'user__username', 'user__email',
+    )
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     """Список покупок."""
     list_display = ('recipe', 'user')
-    list_filter = ('recipe', 'user',)
+    list_filter = ('recipe__tags__name',)
+    search_fields = (
+        'user__username', 'user__email',
+    )

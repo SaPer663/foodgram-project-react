@@ -19,5 +19,7 @@ class CustomUserAdmin(UserAdmin):
 class FollowAdmin(admin.ModelAdmin):
     """Админка подписки."""
     list_display = ('author', 'user')
-    list_filter = ('author', 'user')
-    search_fields = ('author', 'user')
+    search_fields = (
+        'author__username', 'author__email',
+        'user__username', 'user__email',
+    )
