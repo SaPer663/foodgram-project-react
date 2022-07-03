@@ -17,7 +17,7 @@ class User(AbstractUser):
     class Meta:
         ordering = ('-date_joined',)
         verbose_name = 'пользователь'
-        verbose_name_plural = 'пользоатели'
+        verbose_name_plural = 'пользователи'
 
 
 class Follow(models.Model):
