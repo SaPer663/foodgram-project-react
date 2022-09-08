@@ -91,11 +91,6 @@ sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --bui
 - [swagger](http://foodgram.saper663.ru/api/swagger/)
 - [redoc](http://foodgram.saper663.ru/api/docs/)
 
-## Проект в интернете
-Проект запущен и доступен по [адресу](http://foodgram.saper663.ru/)
-
-Логин администратора `reviewer`
-Пароль администратора `reviewer_2022`
 
 ### Автор
 Александр
